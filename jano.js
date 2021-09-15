@@ -20,18 +20,44 @@ const embed = new Discord.MessageEmbed()
 .setColor("BLACK")
 .setDescription(` 
 > **General Commands**
-> \`  ${prefix}time • ${prefix}stats • ${prefix}info • ${prefix}server • ${prefix}avatar\`
-> \` ${prefix}support • ${prefix}invite • ${prefix}id • ${prefix}emoji • ${prefix}bots  \`
+> \`${prefix}avatar\`
+> \`${prefix}server \` 
+> \`${prefix}info\`
+> \`${prefix}stats\` 
+> \`${prefix}time\` 
+> \`${prefix}support\` 
+> \`${prefix}invite\` 
+> \`${prefix}id\` 
+> \`${prefix}emoji\` 
+> \`${prefix}bots\`
 > **Moderation Commands**
-> \`  ${prefix}clear • ${prefix}lock • ${prefix}unlock • ${prefix}roles • ${prefix}slowmode \`
-> \` ${prefix}channel all • ${prefix}channelinfo  • ${prefix}user • ${prefix}say \`
-> \`  ${prefix}roleinfo   • ${prefix}ping • ${prefix}bot \`
+> \`${prefix}clear\` 
+> \`${prefix}lock\`
+> \`${prefix}unlock\`
+> \`${prefix}roles\`
+> \`${prefix}slowmode\`
+> \`${prefix}say\`
+> \`${prefix}channelinfo\`
+> \`${prefix}channel all\`
+> \`${prefix}bot\` 
+> \`${prefix}ping\` 
+> \`${prefix}roleinfo \` 
 > **Game Commands**
-> \` ${prefix}kiss • ${prefix}slap • ${prefix}slot • ${prefix}boom • ${prefix}hug • ${prefix}love • ${prefix}rps • ${prefix}fruit\`
+ > \`${prefix}kiss  \` 
+ > \`${prefix}slap  \` 
+ > \`${prefix}slot \` 
+ > \`${prefix}boom \` 
+ > \`${prefix}hug \` 
+ > \`${prefix}love \` 
+ > \`${prefix}rps \` 
+ > \`${prefix}fruit \` 
 > **Text Commands**
-> \` ${prefix}textEngish • ${prefix}textArabic • ${prefix}textTurkish • ${prefix}textKurdish \`
+ > \`${prefix}textKurdish \` 
+ > \`${prefix}textTurkish \` 
+ > \`${prefix}textArabic \` 
+ > \`${prefix}textEngish \` 
 > **anti everyone and anti partner**
->  \` use onle owner ship or administrator or MENTION_EVERYONE send [@everyone] \`
+> \` use onle owner ship or administrator or MENTION_EVERYONE send [@everyone] \`
 > \` anti link use onle owner ship ord administrator or manage message send [anti partner] \`
 
 **[ invite ](https://discord.com/api/oauth2/authorize?client_id=867208331659706379&permissions=8&scope=bot)** , **[ support ](https://discord.gg/9n6dj99ZEN)**
@@ -47,7 +73,16 @@ const embed = new Discord.MessageEmbed()
 
 
 /////////////////////
-
+/////////////
+client.on("message", msg => {
+  if (msg.author.bot) return;
+  if (msg.content.includes("@everyone")) {
+    if (msg.member.hasPermission("MENTION_EVERYONE")) return;
+    if (!msg.channel.guild) return;
+    msg.delete();
+    msg.reply("```You cant send everyone``` <a:jano_23:799630647513317387>");
+  }
+});
 /////////////
 client.on("message", msg => {
   if (msg.author.bot) return;
@@ -128,15 +163,15 @@ client.on('ready', () => {
 }
 }); 
    ///////////////////////////
-   client.on("message", habdo => {
-    if (habdo.content.startsWith(prefix + "avatar")) {
+   client.on("message", JANO => {
+    if (JANO.content.startsWith(prefix + "avatar")) {
   var embed = new Discord.MessageEmbed()
-         .setAuthor(`${habdo.author.username}`, habdo.author.avatarURL({dynamic: true}))
+         .setAuthor(`${JANO.author.username}`, JANO.author.avatarURL({dynamic: true}))
          .setColor('#0000ff')
-         .setDescription(`**[Avatar Link](${habdo.author.avatarURL({dynamic: true, format: 'png', size: 1024})})**`)
-         .setImage(habdo.author.avatarURL({dynamic: true, format: 'png', size: 1024}))
-         .setFooter(`Requsted by ${habdo.author.tag}`, habdo.author.avatarURL({dynamic: true}))
-    habdo.channel.send(embed);
+         .setDescription(`**[Avatar Link](${JANO.author.avatarURL({dynamic: true, format: 'png', size: 1024})})**`)
+         .setImage(JANO.author.avatarURL({dynamic: true, format: 'png', size: 1024}))
+         .setFooter(`Requsted by ${JANO.author.tag}`, JANO.author.avatarURL({dynamic: true}))
+    JANO.channel.send(embed);
 }
 });
 
@@ -168,26 +203,38 @@ client.on("message", message => {
 });
 //////////////////////////////////////////////////////////////////
 client.on("message", message => {
-  if (message.content.split(" ")[0].toLowerCase() === prefix + "clear") {
-    const word = message.content;
-    const number = word.slice(7, word.length);
-    const int = Number(number);
-    if (!message.member.hasPermission("MANAGE_MESSAGES")) {
-      return message.channel.send("**Has remission MANAGE_MESSAGES**");
+  if (!message.guild) return;
+  if (message.author.bot) return;
+  let args = message.content.split(" ");
+  let command = args[0].toLowerCase();
+  if (command === prefix + "clear") {
+    if (!message.member.hasPermission("MANAGE_MESSAGES"))
+      return message.channel.send(
+        `❌ You are missing the permission \`MANAGE MESSAGES\`.`
+      );
+    if (!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES"))
+      return message.channel.send(
+        `❌ I Am missing the permission \`MANAGE MESSAGES\`.`
+      );
+    if (!args[1]) {
+      message.channel
+        .bulkDelete(100)
+        .then(m =>
+          message.channel
+            .send(`\`\`\`\nDeleted ${m.size} messages\n\`\`\``)
+            .then(p => p.delete({ timeout: 3000 }))
+        );
+    } else {
+      message.delete().then(n => {
+        message.channel
+          .bulkDelete(args[1])
+          .then(m =>
+            message.channel
+              .send(`\`\`\`\nDeleted ${m.size} messages\n\`\`\``)
+              .then(p => p.delete({ timeout: 3000 }))
+          );
+      });
     }
-    if (int >= 101) {
-      return message.channel.send("**Not Message 100**");
-    }
-    if (int == "100") {
-      return message.channel.send("supply A Number to Delete");
-    } else if (isNaN(int)) {
-      return message.reply("Number");
-    }
-    message.channel.bulkDelete(int).then(() => {
-      return message.channel
-        .send(` **Delete Message ${int}**`)
-        .then(m => m.delete(500));
-    });
   }
 });
 //////////////////////////////////////////////////////////////////
@@ -230,7 +277,7 @@ client.on("message", message => {
 
     var clinet = new Discord.MessageEmbed()
       .setTitle("[ TODAY]  ")
-      .setColor("#0000ff")
+      .setColor("BLACK")
       .setTimestamp()
       .setDescription("" + Day + "-" + Month + "-" + Year + "");
     message.channel.send(clinet);
@@ -242,11 +289,11 @@ client.on("message", message => {
     if (!message.channel.guild)
       return message.reply("**this command only for server**");
     const embed = new Discord.MessageEmbed()
-      .setColor("#0000ff")
+      .setColor("RANDOM")
       .setThumbnail(client.user.avatarURL())
       .setDescription(`
  
-[support](https://discord.gg/P9gVhYgePA)`);
+[support](https://discord.gg/9n6dj99ZEN)`);
     message.channel.send(embed);
   }
 });
@@ -256,7 +303,7 @@ client.on("message", message => {
     if (!message.channel.guild)
       return message.reply("**this command only for server**");
     const embed = new Discord.MessageEmbed()
-      .setColor("#0000ff")
+      .setColor("RANDOM")
       .setThumbnail(client.user.avatarURL())
       .setDescription(`
 [invite](https://discord.com/api/oauth2/authorize?client_id=867208331659706379&permissions=8&scope=bot)
@@ -266,39 +313,60 @@ client.on("message", message => {
 });
 
 //////////////////////////////////////////////////////////////////
-client.on("message", message => {
-  if (message.content === prefix + "lock") {
+client.on("message", async message => {
+  if (message.content.startsWith(prefix + "lock")) {
+    if (!message.channel.guild)
+      return message.channel.send(
+        "**❌ | Sorry This Command Only For Servers .**"
+      );
+
     if (!message.member.hasPermission("MANAGE_CHANNELS")) return;
-    message.delete();
-
-    if (!message.channel.guild) return;
-
-    let bwan = new Discord.MessageEmbed()
-
-      .setFooter("Has Been Channel Lock")
-      .setColor("#0000ff")
-    message.channel.send(bwan);
-
+    if (!message.guild.member(client.user).hasPermission("MANAGE_CHANNELS"))
+      return;
     message.channel.updateOverwrite(message.guild.id, {
       SEND_MESSAGES: false
     });
+     const lock = new Discord.MessageEmbed()
+     
+      .setColor("#00000")
+      .setDescription(
+        `<:emoji_50:861993564389244988> | **Locked Channel**
+**Channel Name** : <#${message.channel.id}>
+**Locked By** : <@${message.author.id}>
+`
+      )
+      .setThumbnail(message.author.avatarURL())
+     .setFooter(`${message.author.tag}`, message.author.avatarURL())
+          .setTimestamp()
+
+    message.channel.send(lock);
   }
 });
 //////////////////////////////////////////////////////////////////
-client.on("message", message => {
-  if (message.content === prefix + "unlock") {
+client.on("message", async message => {
+  if (message.content.startsWith(prefix + "unlock")) {
+    if (!message.channel.guild)
+      return message.channel.send(
+         "**❌ | Sorry This Command Only For Servers .**"
+      );
+
     if (!message.member.hasPermission("MANAGE_CHANNELS")) return;
-    message.delete();
-
-    if (!message.channel.guild) return message.reply("SORRY IM IN SERVER");
-    let bwan = new Discord.MessageEmbed()
-      .setFooter("Has Been Channel unlock")
-      .setColor("#0000ff")
-    message.channel.send(bwan);
-
+    if (!message.guild.member(client.user).hasPermission("MANAGE_CHANNELS"))
+      return;
     message.channel.updateOverwrite(message.guild.id, {
-      SEND_MESSAGES: true
+      SEND_MESSAGES: null
     });
+    const unlock = new Discord.MessageEmbed()
+      .setColor("#00000")
+      .setDescription(
+        `<:emoji_44:861993374898454551> | **UnLocked Channel**
+**Channel Name** : <#${message.channel.id}>
+**Locked By** : <@${message.author.id}>
+`
+      )
+      .setThumbnail(message.author.avatarURL())
+      .setFooter(`${message.author.tag}`, message.author.avatarURL());
+    message.channel.send(unlock);
   }
 });
 //////////////////////////////////////////////////////////////////
@@ -349,7 +417,7 @@ client.on("message", message => {
     ];
     const embed = new Discord.MessageEmbed()
       .setDescription(`${message.author.username} Slap ${user.username}!`)
-      .setColor(`#0000ff`)
+      .setColor(`RANDOM`)
       .setImage(slaps[Math.floor(Math.random() * slaps.length)]);
     message.channel.send(embed);
   }
@@ -374,7 +442,7 @@ client.on("message", message => {
 
     const embed = new Discord.MessageEmbed()
       .setDescription(`${message.author.username} Love ${user.username}!`)
-     .setColor(`#0000ff`)
+     .setColor(`RANDOM`)
       .setImage(loves[Math.floor(Math.random() * loves.length)]);
     message.channel.send(embed);
   }
@@ -400,7 +468,7 @@ client.on("message", message => {
 
     const embed = new Discord.MessageEmbed()
       .setDescription(`${message.author.username} Hugs ${user.username}!`)
-      .setColor(`#0000ff`)
+      .setColor(`RANDOM`)
       .setImage(hugs[Math.floor(Math.random() * hugs.length)])
       .setFooter("hug");
     message.channel.send(embed);
@@ -424,7 +492,7 @@ client.on("message", message => {
 
     const embed = new Discord.MessageEmbed()
       .setDescription(`${message.author.username} kiss ${user.username}!`)
-      .setColor(`#0000ff`)
+      .setColor(`RANDOM`)
       .setImage(kiss[Math.floor(Math.random() * kiss.length)]);
     message.channel.send(embed);
   }
@@ -481,7 +549,7 @@ client.on("message", message => {
 
     const embed = new Discord.MessageEmbed()
       .setDescription(`${message.author.username} boom ${user.username}!`)
-      .setColor(`#0000ff`)
+      .setColor(`RANDOM`)
       .setImage(bombs[Math.floor(Math.random() * bombs.length)]);
     message.channel.send(embed);
   }
@@ -618,7 +686,7 @@ client.on("message", async message => {
 
     const embed = new Discord.MessageEmbed()
       .setThumbnail(message.guild.iconURL({ dynamic: true }))
-      .setColor("#f3f3f3")
+      .setColor("RANDOM")
       .setTitle(`${message.guild.name} server Info`)
       .addFields(
         {
@@ -706,7 +774,7 @@ client.on("message", msg => {
     msg.content == prefix + "textarabic"
   ) {
     if (msg.author.bot) return;
-    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RED").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
+    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RANDOM").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
  
     var x = [
 "ألا بذكر الله تطمئن القلوب❤","يدرون بينـه شگد نودّهُـم ، مَرمرونة.🌷",
@@ -728,7 +796,7 @@ client.on("message", msg => {
     msg.content == prefix + "textenglish"
   ) {
     if (msg.author.bot) return;
-    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RED").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
+    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RANDOM").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
  
     var x = [
 "best friends are siblings from anoher mother","In order to succeed, your desire for success should be greater than your fear of failure",
@@ -750,7 +818,7 @@ client.on("message", msg => {
     msg.content == prefix + "textturkish"
   ) {
     if (msg.author.bot) return;
-    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RED").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
+    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RANDOM").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
  
     var x = [
 "Güzel Şeyler Hiç Bitmesin Mesela Senin Sevgin","Ben o gözlerini dünyalara vermem ki kardeşim",
@@ -771,7 +839,7 @@ client.on("message", msg => {
     msg.content == prefix + "textkurdish"
   ) {
     if (msg.author.bot) return;
-    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RED").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
+    if (msg.channel.type == "dm") return msg.channel.send(new Discord.MessageEmbed().setColor("RANDOM").setDescription(error + ` **You Can't Use This Command In DM's!**`).setFooter(`Request By ${msg.author.tag}`).setTimestamp())
  
     var x = ["بـمرێ ئـەو دڵەیی تەنھا بـەناو ھێنانت پڕ دەبێ","ڕەنگە ھیچ کات خۆشیان نەویستبین ڕەنگە تەنھا برینەکانی خۆیان بە ئێمە چاک کردبێتەوە ..",
 "ئەبم بە خەون بۆ ھەمووان و خەو بە کەسەوە نابینم","هیچ شتێک ڕاست نیە جگە لەو نامایەی دەیسڕیەوە پێش ئەوەی  بینێری ..",

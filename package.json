@@ -1,6 +1,6 @@
 {
+   "name": "system bot2",
   "version": "0.0.1",
-  "description": "system bot",
   "main": "jano.js",
   "scripts": {
     "start": "node jano.js"
